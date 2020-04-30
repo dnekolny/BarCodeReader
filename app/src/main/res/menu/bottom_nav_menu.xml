@@ -2,23 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_scan"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_scan" />
-
-    <item
         android:id="@+id/navigation_modules"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/title_modules" />
 
     <item
+        android:id="@+id/navigation_scan"
+        android:icon="@drawable/ic_fullscreen_black_24dp"
+        android:title="@string/title_scan" />
+
+    <item
         android:id="@+id/navigation_history"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_history_black_24dp"
         android:title="@string/title_history" />
 
     <item
         android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:title="@string/title_settings" />
 
 </menu>
