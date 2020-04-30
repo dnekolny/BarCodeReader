@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_scan">
+
+    <fragment
+        android:id="@+id/navigation_scan"
+        android:name="com.example.barcodereader.ui.scan.ScanFragment"
+        android:label="@string/title_scan"
+        tools:layout="@layout/fragment_scan" />
+
+    <fragment
+        android:id="@+id/navigation_modules"
+        android:name="com.example.barcodereader.ui.modules.ModulesFragment"
+        android:label="@string/title_modules"
+        tools:layout="@layout/fragment_modules" />
+
+    <fragment
+        android:id="@+id/navigation_history"
+        android:name="com.example.barcodereader.ui.history.HistoryFragment"
+        android:label="@string/title_history"
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.barcodereader.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>

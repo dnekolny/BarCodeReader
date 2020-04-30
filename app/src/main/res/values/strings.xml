@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BarCodeReader</string>
+    <string name="title_scan">Scan</string>
+    <string name="title_modules">Modules</string>
+    <string name="title_history">History</string>
+    <string name="title_settings">Settings</string>
+</resources>
