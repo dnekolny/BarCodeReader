@@ -6,23 +6,14 @@
     android:layout_height="match_parent">
 
 
-
-    <TextureView
-        android:id="@+id/cameraTextureView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <fragment android:name="com.example.barcodereader.ui.scan.ZXingScannerFragment"
+        android:id="@+id/zxingScannerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/cameraButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Capture"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
