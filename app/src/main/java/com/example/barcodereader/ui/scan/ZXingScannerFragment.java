@@ -2,7 +2,6 @@ package com.example.barcodereader.ui.scan;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.barcodereader.R;
-import com.example.barcodereader.ResultActivity;
-import com.google.zxing.Result;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -26,7 +23,7 @@ import me.dm7.barcodescanner.core.IViewFinder;
 import me.dm7.barcodescanner.core.ViewFinderView;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class ZXingScannerFragment extends Fragment implements ZXingScannerView.ResultHandler {
+public class ZXingScannerFragment extends Fragment {
 
     private ZXingScannerView scanner;
 
@@ -38,6 +35,7 @@ public class ZXingScannerFragment extends Fragment implements ZXingScannerView.R
             protected IViewFinder createViewFinderView(Context context) {
                 ViewFinderView vfv = new ViewFinderView(context);
                 vfv.setBorderColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                vfv.setSquareViewFinder(true);
                 vfv.setBorderAlpha(1);
                 return vfv;
             }
@@ -51,7 +49,7 @@ public class ZXingScannerFragment extends Fragment implements ZXingScannerView.R
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
                         Toast.makeText(getContext(), "CAMERA STARTED", Toast.LENGTH_LONG).show();
-                        scanner.setResultHandler(ZXingScannerFragment.this);
+                        scanner.setResultHandler(new ZXingResultHandler(getContext()));
                         scanner.startCamera();
                     }
 
@@ -69,18 +67,11 @@ public class ZXingScannerFragment extends Fragment implements ZXingScannerView.R
         return scanner;
     }
 
-    /*ResultHandler resultHandler;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        resultHandler = (ResultHandler) context;
-    }*/
 
     @Override
     public void onResume() {
         super.onResume();
-        scanner.setResultHandler(this);
+        scanner.setResultHandler(new ZXingResultHandler(getContext()));
         scanner.startCamera();
     }
 
@@ -90,19 +81,4 @@ public class ZXingScannerFragment extends Fragment implements ZXingScannerView.R
         super.onDestroy();
     }
 
-    @Override
-    public void handleResult(Result rawResult) {
-        Toast.makeText(getContext(), rawResult.getText() + " - " + rawResult.getBarcodeFormat(), Toast.LENGTH_LONG).show();
-        //resultHandler.onValueFind(rawResult);
-
-        getActivity().finish();
-        Intent resultActivity = new Intent(getContext(), ResultActivity.class);
-        resultActivity.putExtra("result", rawResult.getText());
-        resultActivity.putExtra("type", rawResult.getBarcodeFormat().toString());
-        startActivity(resultActivity);
-    }
-
-    /*public interface ResultHandler {
-        public void onValueFind(Result result);
-    }*/
 }
