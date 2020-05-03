@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -36,7 +37,11 @@ public class FileHelper {
             return results;
         }
         catch (FileNotFoundException e){
-            return new ArrayList<ScanResult>();
+            return new ArrayList<>();
+        }
+        catch (InvalidClassException e){ //data v souboru neodpovídají objektu
+            removeResults(context);
+            return new ArrayList<>();
         }
     }
 
@@ -44,5 +49,9 @@ public class FileHelper {
         List<ScanResult> results = readResults(context);
         results.add(result);
         writeResults(results, context);
+    }
+
+    public static boolean removeResults(Context context){
+        return context.deleteFile(RESULTS_FILE_NAME);
     }
 }

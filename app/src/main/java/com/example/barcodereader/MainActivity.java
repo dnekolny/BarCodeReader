@@ -1,7 +1,6 @@
 package com.example.barcodereader;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 

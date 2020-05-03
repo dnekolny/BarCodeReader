@@ -28,7 +28,7 @@ public class ZXingResultHandler implements ZXingScannerView.ResultHandler {
         Toast.makeText(context, rawResult.getText() + " - " + rawResult.getBarcodeFormat(), Toast.LENGTH_LONG).show();
 
         try {
-            FileHelper.writeResult(new ScanResult(rawResult), context);
+            FileHelper.writeResult(ScanResult.create(rawResult), context);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(context, "Error while saving result", Toast.LENGTH_LONG).show();
