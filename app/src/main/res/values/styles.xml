@@ -8,6 +8,28 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorText</item>
         <item name="android:windowBackground">@color/colorBackground</item>
+
+        <item name="icdStyle">@style/CustomIconDialogStyle</item>
+    </style>
+
+    <!-- Your custom dialog style, don't forget to specify the parent style! -->
+    <style name="CustomIconDialogStyle" parent="IcdStyle">
+        <item name="icdIconSize">50dp</item>
+        <item name="icdIconColor">@color/colorText</item>
+        <item name="icdListHeaderStyle">@style/CustomHeaderStyle</item>
+        <item name="icdDialogButtonStyle">@style/CustomDialogButtonStyle</item>
+    </style>
+
+    <!-- Custom style for the list headers, again don't forget the parent! -->
+    <style name="CustomHeaderStyle" parent="IcdListHeaderStyle">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+
+    <!-- Custom style for the list headers, again don't forget the parent! -->
+    <style name="CustomDialogButtonStyle" parent="IcdDialogButtonStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/colorText</item>
     </style>
 
 </resources>

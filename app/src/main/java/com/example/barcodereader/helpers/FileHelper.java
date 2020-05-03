@@ -2,6 +2,7 @@ package com.example.barcodereader.helpers;
 
 import android.content.Context;
 
+import com.example.barcodereader.model.Module;
 import com.example.barcodereader.model.ScanResult;
 
 import java.io.FileInputStream;
@@ -53,5 +54,23 @@ public class FileHelper {
 
     public static boolean removeResults(Context context){
         return context.deleteFile(RESULTS_FILE_NAME);
+    }
+
+    public static List<Module> readModules(Context context) {
+        return getTestModules();
+    }
+
+    private static List<Module> getTestModules(){
+        List<Module> modules = new ArrayList<>();
+
+        modules.add(new Module(1, "MODULE1", 0, 0xFFFFFFFF));
+        modules.add(new Module(2, "MODULE2", 1, 0xFFFF0000));
+        modules.add(new Module(3, "MODULE3", 15, 0xFF00FF00));
+        modules.add(new Module(4, "MODULE4", 42, 0xFF0000FF));
+        modules.add(new Module(5, "MODULE5", 142, 0xFFFFFFFF));
+        modules.add(new Module(6, "MODULE6", 202, 0xFFFFFFFF));
+        modules.add(new Module(7, "MODULE7", 201, 0xFFFFFFFF));
+
+        return modules;
     }
 }

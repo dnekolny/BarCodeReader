@@ -1,11 +1,15 @@
 package com.example.barcodereader.ui.scan;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.example.barcodereader.R;
 
 import androidx.annotation.NonNull;
@@ -16,24 +20,18 @@ import androidx.lifecycle.ViewModelProviders;
 
 public class ScanFragment extends Fragment {
 
-    private ScanViewModel scanViewModel;
     private ZXingScannerFragment scanner;
+    private SharedPreferences sharedPref;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        scanViewModel = ViewModelProviders.of(this).get(ScanViewModel.class);
 
         View root = inflater.inflate(R.layout.fragment_scan, container, false);
-        //final TextView textView = root.findViewById(R.id.text_scan);
-
-        scanViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                //textView.setText(s);
-            }
-        });
-
         scanner = (ZXingScannerFragment)getChildFragmentManager().findFragmentById(R.id.zxingScannerFragment);
+
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        long moduleId = sharedPref.getLong(getString(R.string.sp_active_module_id), 0);
+        Toast.makeText(getContext(), "Active module: " + moduleId, Toast.LENGTH_SHORT).show();
 
         return root;
     }

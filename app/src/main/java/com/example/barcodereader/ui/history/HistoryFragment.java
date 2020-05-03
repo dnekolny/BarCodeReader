@@ -38,7 +38,7 @@ public class HistoryFragment extends Fragment {
             }
         });
 
-        listView = root.findViewById(R.id.historyListView);
+        listView = root.findViewById(R.id.listViewHistory);
         try {
             listView.setAdapter(new HistoryListAdapter(getContext(), 0, FileHelper.readResults(getContext())));
         } catch (Exception e) {

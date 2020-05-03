@@ -2,11 +2,12 @@
 <resources>
 
     <!-- DARK -->
-    <color name="colorPrimary">#323232</color>
-    <color name="colorPrimaryDark">#212121</color>
+    <color name="colorPrimary">#2C2C2C</color>
+    <color name="colorPrimaryDark">#1A1A1A</color>
     <color name="colorAccent">#14ffec</color>
     <color name="colorText">#eeeeee</color>
-    <color name="colorBackground">#464646</color>
+    <color name="colorBackground">#222222</color>
+    <color name="colorBackgroundLight">#323232</color>
 
     <!-- BLUE -->
     <!--<color name="colorPrimary">#005792</color>
