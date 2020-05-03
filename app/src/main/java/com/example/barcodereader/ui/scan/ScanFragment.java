@@ -1,5 +1,7 @@
 package com.example.barcodereader.ui.scan;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

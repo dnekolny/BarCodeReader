@@ -35,7 +35,7 @@ public class HistoryListAdapter extends ArrayAdapter<ScanResult> {
         TextView tvDate = (TextView) convertView.findViewById(R.id.tvHistoryResultDate);
 
         tvValue.setText(item.getValue());
-        tvDate.setText(DateHelper.getDate(item.getTimestamp()));
+        tvDate.setText(DateHelper.getDate(item.getTimestamp()) + " / " + item.getLatitude() + " / " + item.getLongitude());
 
         return convertView;
     }

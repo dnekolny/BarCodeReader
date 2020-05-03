@@ -1,5 +1,7 @@
 package com.example.barcodereader.model;
 
+import android.location.Location;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
@@ -12,12 +14,19 @@ public class ScanResult implements Serializable {
     private BarcodeFormat format;
     private long timestamp;
 
-    public static ScanResult create(Result rawResult){
+    private double latitude;
+    private double longitude;
+
+    public static ScanResult create(Result rawResult, Location location){
         ScanResult result = new ScanResult();
         result.id = Math.round(Math.random() * 99999999999L);
         result.value = rawResult.getText();
         result.format = rawResult.getBarcodeFormat();
         result.timestamp = rawResult.getTimestamp();
+        if(location != null){
+            result.longitude = location.getLongitude();
+            result.latitude = location.getLatitude();
+        }
         return result;
     }
 
@@ -51,5 +60,21 @@ public class ScanResult implements Serializable {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }
