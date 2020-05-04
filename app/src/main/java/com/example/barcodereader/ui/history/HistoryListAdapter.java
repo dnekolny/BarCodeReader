@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.barcodereader.R;
-import com.example.barcodereader.helpers.DateHelper;
+import com.example.barcodereader.helpers.DataHelper;
 import com.example.barcodereader.model.ScanResult;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class HistoryListAdapter extends ArrayAdapter<ScanResult> {
         TextView tvDate = (TextView) convertView.findViewById(R.id.tvHistoryResultDate);
 
         tvValue.setText(item.getValue());
-        tvDate.setText(DateHelper.getDate(item.getTimestamp()) + " / " + item.getLatitude() + " / " + item.getLongitude());
+        tvDate.setText(DataHelper.getDate(item.getTimestamp()) + " / " + item.getLatitude() + " / " + item.getLongitude());
 
         return convertView;
     }

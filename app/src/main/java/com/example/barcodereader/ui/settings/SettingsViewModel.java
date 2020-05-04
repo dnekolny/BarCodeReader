@@ -1,5 +1,8 @@
 package com.example.barcodereader.ui.settings;
 
+import com.example.barcodereader.helpers.DataHelper;
+import com.example.barcodereader.model.Module;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

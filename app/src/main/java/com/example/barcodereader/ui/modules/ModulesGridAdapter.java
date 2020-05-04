@@ -1,9 +1,6 @@
 package com.example.barcodereader.ui.modules;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +10,12 @@ import android.widget.TextView;
 
 import com.example.barcodereader.App;
 import com.example.barcodereader.R;
-import com.example.barcodereader.helpers.DateHelper;
 import com.example.barcodereader.model.Module;
-import com.example.barcodereader.model.ScanResult;
 import com.maltaisn.icondialog.data.Icon;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 
 public class ModulesGridAdapter extends ArrayAdapter<Module> {
 

@@ -1,6 +1,7 @@
 package com.example.barcodereader;
 
 import android.app.Application;
+import android.graphics.drawable.Drawable;
 
 import com.maltaisn.icondialog.pack.IconPack;
 import com.maltaisn.icondialog.pack.IconPackLoader;
@@ -45,5 +46,9 @@ public class App extends Application {
         iconPack.loadDrawables(loader.getDrawableLoader());
 
         return iconPack;
+    }
+
+    public Drawable getIconDrawable(int idIcon){
+        return getIconPack().getIcon(idIcon).getDrawable();
     }
 }

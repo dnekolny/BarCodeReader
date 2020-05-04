@@ -6,12 +6,16 @@ public class Module {
     private String name;
     private int iconId;
     private int color;
+    private boolean favorite;
 
-    public Module(long id, String name, int iconId, int color) {
+    public Module() {}
+
+    public Module(long id, String name, int iconId, int color, boolean favorite) {
         this.id = id;
         this.name = name;
         this.iconId = iconId;
         this.color = color;
+        this.favorite = favorite;
     }
 
     public long getId() {
@@ -44,5 +48,13 @@ public class Module {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

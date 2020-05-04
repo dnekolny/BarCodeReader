@@ -18,8 +18,10 @@ android {
     }
 }
 
-repositories {
-    jcenter()
+allprojects {
+    repositories {
+        jcenter()
+    }
 }
 
 dependencies {
@@ -40,4 +42,5 @@ dependencies {
 
     implementation 'com.maltaisn:icondialog:3.2.2'
     implementation "com.maltaisn:iconpack-default:1.0.0"
+    implementation "com.github.skydoves:colorpickerview:2.1.6"
 }

@@ -3,8 +3,15 @@ package com.example.barcodereader;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.maltaisn.icondialog.IconDialog;
+import com.maltaisn.icondialog.data.Icon;
+import com.maltaisn.icondialog.pack.IconPack;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
