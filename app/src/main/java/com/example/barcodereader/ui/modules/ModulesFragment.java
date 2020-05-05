@@ -1,6 +1,7 @@
 package com.example.barcodereader.ui.modules;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback {
     private GridView gridView;
     private FloatingActionButton btnAddModule;
     private ModulesDialogEdit dialogEdit;
+    private ModulesDialogEdit.ModuleDialogEditHandler dialogHandler;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +50,26 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback {
         modulesViewModel = ViewModelProviders.of(this).get(ModulesViewModel.class);
         View root = inflater.inflate(R.layout.fragment_modules, container, false);
 
-        dialogEdit = new ModulesDialogEdit(getActivity(), getChildFragmentManager());
+        //Handler for dialog buttons
+        dialogHandler = new ModulesDialogEdit.ModuleDialogEditHandler() {
+            @Override
+            public void onOkConfirmClick() {
+                //REFRESH GRID VIEW
+                refreshGridAdapter();
+            }
+
+            @Override
+            public void onCancelConfirmClick() { //DO NOTHING
+            }
+
+            @Override
+            public void onModuleDelete() {
+                //REFRESH GRID VIEW
+                refreshGridAdapter();
+            }
+        };
+
+        dialogEdit = new ModulesDialogEdit(getActivity(), getChildFragmentManager(), dialogHandler);
         modulesViewModel.getModule().observe(this, new Observer<Module>() {
             @Override
             public void onChanged(Module module) {
@@ -56,14 +77,17 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback {
             }
         });
 
+        dialogEdit.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Toast.makeText(getContext(), "DIALOG DISMISS", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         gridView = root.findViewById(R.id.gridViewModules);
         btnAddModule = root.findViewById(R.id.btnAddModule);
 
-        try {
-            gridView.setAdapter(new ModulesGridAdapter(getContext(), 0, FileHelper.readModules(getContext())));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        refreshGridAdapter();
 
         //MODULE CLICK
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -87,10 +111,10 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 TextView tvId = ((TextView) (view.findViewById(R.id.tvModuleId)));
-                long moduleId = Long.parseLong(tvId.getText().toString());
+                final long moduleId = Long.parseLong(tvId.getText().toString());
 
                 try {
-                    modulesViewModel.setModule(FileHelper.readModules(getContext()).get((int) moduleId - 1));
+                    modulesViewModel.setModule(Module.getById(moduleId, getContext()));
                     //dialogEdit.setModule(FileHelper.readModules(getContext()).get((int)moduleId - 1));
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
@@ -112,6 +136,14 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback {
         return root;
     }
 
+    private void refreshGridAdapter(){
+        try {
+            gridView.setAdapter(new ModulesGridAdapter(getContext(), 0, FileHelper.readModules(getContext())));
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Nullable
     @Override
     public IconPack getIconDialogIconPack() {
@@ -120,6 +152,7 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback {
 
     @Override
     public void onIconDialogCancelled() {
+        showEditDialog();
     }
 
     @Override
@@ -127,13 +160,15 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback {
         if (icons.size() > 0) {
             Icon icon = icons.get(0);
             modulesViewModel.changeIconId(icon.getId());
+            Toast.makeText(getContext(), "ICON: " + icon.getId(), Toast.LENGTH_SHORT).show();
         }
+
         showEditDialog();
     }
 
     private void showEditDialog() {
         if (dialogEdit == null) {
-            dialogEdit = new ModulesDialogEdit(getActivity(), getChildFragmentManager());
+            dialogEdit = new ModulesDialogEdit(getActivity(), getChildFragmentManager(), dialogHandler);
         }
         dialogEdit.show();
     }

@@ -1,6 +1,16 @@
 package com.example.barcodereader.model;
 
-public class Module {
+import android.content.Context;
+
+import com.example.barcodereader.helpers.DataHelper;
+import com.example.barcodereader.helpers.FileHelper;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Module implements Serializable {
 
     private long id;
     private String name;
@@ -16,6 +26,36 @@ public class Module {
         this.iconId = iconId;
         this.color = color;
         this.favorite = favorite;
+    }
+
+    public static Module getById(long id, Context context) throws IOException, ClassNotFoundException {
+        List<Module> modules = FileHelper.readModules(context);
+        for (Module m :
+                modules) {
+            if (m.getId() == id) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public static List<Module> getDefaultModules(){
+        List<Module> modules = new ArrayList<>();
+        modules.add(new Module(
+                DataHelper.getRandomLong(),
+                "Default",
+                213,
+                0xFFFFFFFF,
+                true
+        ));
+        modules.add(new Module(
+                DataHelper.getRandomLong(),
+                "Other",
+                665,
+                0xFFFFFFFF,
+                false
+        ));
+        return modules;
     }
 
     public long getId() {

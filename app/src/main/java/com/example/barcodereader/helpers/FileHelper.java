@@ -69,31 +69,66 @@ public class FileHelper {
 
     public static List<Module> readModules(Context context) throws IOException, ClassNotFoundException {
 
-        return getTestModules();
+        //return getTestModules();
 
-        /*try {
+        try {
             FileInputStream fis = context.openFileInput(MODULES_FILE_NAME);
             ObjectInputStream ois = new ObjectInputStream(fis);
             List<Module> modules = (List<Module>) ois.readObject();
+            if(modules.size() < 1){
+                modules = writeDefaultModules(context);
+            }
             ois.close();
             return modules;
         } catch (FileNotFoundException e) {
-            return new ArrayList<>();
+            return writeDefaultModules(context);
         } catch (InvalidClassException e) { //data v souboru neodpovídají objektu
             removeModules(context);
             return new ArrayList<>();
-        }*/
+        }
 
     }
 
+    ///Save or Update module
     public static void writeModule(Module module, Context context) throws IOException, ClassNotFoundException {
         List<Module> modules = readModules(context);
-        modules.add(module);
+
+        boolean mFind = false;
+        for (int i = 0; i < modules.size() && !mFind; i++) {
+            Module m = modules.get(i);
+            if(m.getId() == module.getId()){
+                modules.set(i, module);
+                mFind = true;
+            }
+        }
+        if(!mFind){
+            modules.add(module);
+        }
+        writeModules(modules, context);
+    }
+
+    public static void removeModule(long id, Context context) throws IOException, ClassNotFoundException {
+        List<Module> modules = readModules(context);
+
+        boolean mFind = false;
+        for (int i = 0; i < modules.size() && !mFind; i++) {
+            Module m = modules.get(i);
+            if(m.getId() == id){
+                modules.remove(i);
+                mFind = true;
+            }
+        }
         writeModules(modules, context);
     }
 
     public static boolean removeModules(Context context) {
         return context.deleteFile(MODULES_FILE_NAME);
+    }
+
+    private static List<Module> writeDefaultModules(Context context) throws IOException {
+        List<Module> modules = Module.getDefaultModules();
+        writeModules(modules, context);
+        return modules;
     }
 
     private static List<Module> getTestModules() {

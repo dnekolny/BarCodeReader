@@ -1,5 +1,7 @@
 package com.example.barcodereader.helpers;
 
+import com.example.barcodereader.model.Module;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +29,10 @@ public class DataHelper {
 
         Random r = new Random();
         return r.nextInt((max - min) + 1) + min;
+    }
+
+    public static long getRandomLong(){
+        return Math.round(Math.random() * 99999999999L);
     }
 
 }

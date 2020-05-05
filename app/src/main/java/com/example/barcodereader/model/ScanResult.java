@@ -2,6 +2,7 @@ package com.example.barcodereader.model;
 
 import android.location.Location;
 
+import com.example.barcodereader.helpers.DataHelper;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
@@ -19,7 +20,7 @@ public class ScanResult implements Serializable {
 
     public static ScanResult create(Result rawResult, Location location){
         ScanResult result = new ScanResult();
-        result.id = Math.round(Math.random() * 99999999999L);
+        result.id = DataHelper.getRandomLong();
         result.value = rawResult.getText();
         result.format = rawResult.getBarcodeFormat();
         result.timestamp = rawResult.getTimestamp();
