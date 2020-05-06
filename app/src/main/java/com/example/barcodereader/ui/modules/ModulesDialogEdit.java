@@ -9,17 +9,17 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.barcodereader.App;
 import com.example.barcodereader.R;
-import com.example.barcodereader.helpers.FileHelper;
+import com.example.barcodereader.helpers.DataAccess;
 import com.example.barcodereader.model.Module;
 import com.maltaisn.icondialog.IconDialog;
 import com.maltaisn.icondialog.IconDialogSettings;
+import com.skydoves.colorpickerview.ColorPickerView;
+import com.skydoves.colorpickerview.listeners.ColorListener;
 
 import java.io.IOException;
 
@@ -43,6 +43,7 @@ public class ModulesDialogEdit extends Dialog implements android.view.View.OnCli
     private ImageView imgIcon;
     private EditText editTextName;
     private IconDialog iconDialog;
+    private ColorPickerView colorPickerView;
 
     private boolean isCreated = false;
     private Module module;
@@ -69,6 +70,7 @@ public class ModulesDialogEdit extends Dialog implements android.view.View.OnCli
         btnFavorite = (ToggleButton) findViewById(R.id.toggleDialogModuleFavorite);
         editTextName = (EditText) findViewById(R.id.editTextDialogModulName);
         btnDelete = (ImageView) findViewById(R.id.imageButtonModuleDelete);
+        colorPickerView = (ColorPickerView) findViewById(R.id.colorPickerView);
 
         isCreated = true;
         refreshUi();
@@ -81,12 +83,24 @@ public class ModulesDialogEdit extends Dialog implements android.view.View.OnCli
         // If dialog is already added to fragment manager, get it. If not, create a new instance.
         IconDialog dialog = (IconDialog) fragmentManager.findFragmentByTag(ICON_DIALOG_TAG);
         iconDialog = dialog != null ? dialog : IconDialog.newInstance(new IconDialogSettings.Builder().build());
+
+        colorPickerView.setColorListener(new ColorListener() {
+            @Override
+            public void onColorSelected(int color, boolean fromUser) {
+                if(fromUser) {
+                    module.setColor(color);
+                    imgIcon.setColorFilter(module.getColor());
+                }
+            }
+        });
     }
 
     private void refreshUi() {
         if(isCreated && module != null){
             imgIcon.setImageDrawable(((App)activity.getApplication()).getIconDrawable(module.getIconId()));
             imgIcon.setColorFilter(module.getColor());
+            colorPickerView.selectCenter();
+            colorPickerView.setPureColor(module.getColor()); //nefunguje
             editTextName.setText(module.getName());
             btnFavorite.setChecked(module.isFavorite());
         }
@@ -127,7 +141,7 @@ public class ModulesDialogEdit extends Dialog implements android.view.View.OnCli
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
                                 try {
-                                    FileHelper.removeModule(module.getId(), getContext());
+                                    DataAccess.removeModule(module.getId(), getContext());
                                 } catch (IOException | ClassNotFoundException e) {
                                     e.printStackTrace();
                                 }
@@ -156,8 +170,7 @@ public class ModulesDialogEdit extends Dialog implements android.view.View.OnCli
         if(isCreated) {
             module.setName(editTextName.getText().toString());
             module.setFavorite(btnFavorite.isChecked());
-            //TODO module.setColor();
-            FileHelper.writeModule(module, getContext());
+            DataAccess.saveModule(module, getContext());
         }
     }
 }

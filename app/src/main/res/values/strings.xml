@@ -6,4 +6,6 @@
     <string name="title_settings">Settings</string>
 
     <string name="sp_active_module_id">Settings</string>
+    <string name="favorite_section">Favorite:</string>
+    <string name="others_section">Others:</string>
 </resources>

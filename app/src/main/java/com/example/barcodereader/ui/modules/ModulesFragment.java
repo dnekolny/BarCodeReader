@@ -14,8 +14,9 @@ import android.widget.Toast;
 
 import com.example.barcodereader.App;
 import com.example.barcodereader.R;
-import com.example.barcodereader.helpers.FileHelper;
+import com.example.barcodereader.helpers.DataAccess;
 import com.example.barcodereader.model.Module;
+import com.example.barcodereader.ui.extensions.ExpandableHeightGridView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.maltaisn.icondialog.IconDialog;
 import com.maltaisn.icondialog.data.Icon;
@@ -34,11 +35,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-public class ModulesFragment extends Fragment implements IconDialog.Callback {
+public class ModulesFragment extends Fragment implements IconDialog.Callback, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private ModulesViewModel modulesViewModel;
     private SharedPreferences sharedPref;
-    private GridView gridView;
+    private ExpandableHeightGridView gridView, gridViewFavorites;
     private FloatingActionButton btnAddModule;
     private ModulesDialogEdit dialogEdit;
     private ModulesDialogEdit.ModuleDialogEditHandler dialogHandler;
@@ -80,49 +81,27 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback {
         dialogEdit.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                Toast.makeText(getContext(), "DIALOG DISMISS", Toast.LENGTH_SHORT).show();
+                //dialog dismiss
             }
         });
 
         gridView = root.findViewById(R.id.gridViewModules);
+        gridViewFavorites = root.findViewById(R.id.gridViewModulesFavorite);
         btnAddModule = root.findViewById(R.id.btnAddModule);
 
-        refreshGridAdapter();
+        //gridview expand
+        gridView.setExpanded(true);
+        gridViewFavorites.setExpanded(true);
 
         //MODULE CLICK
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView tvId = ((TextView) (view.findViewById(R.id.tvModuleId)));
-                long moduleId = Long.parseLong(tvId.getText().toString());
-
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putLong(getString(R.string.sp_active_module_id), moduleId);
-                editor.commit();
-
-                //redirect to scan
-                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-                navController.navigate(R.id.navigation_scan);
-            }
-        });
+        gridView.setOnItemClickListener(this);
+        gridViewFavorites.setOnItemClickListener(this);
 
         //MODULE LONG CLICK
-        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView tvId = ((TextView) (view.findViewById(R.id.tvModuleId)));
-                final long moduleId = Long.parseLong(tvId.getText().toString());
+        gridView.setOnItemLongClickListener(this);
+        gridViewFavorites.setOnItemLongClickListener(this);
 
-                try {
-                    modulesViewModel.setModule(Module.getById(moduleId, getContext()));
-                    //dialogEdit.setModule(FileHelper.readModules(getContext()).get((int)moduleId - 1));
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                showEditDialog();
-                return true;
-            }
-        });
+        refreshGridAdapter();
 
         //ADD MODULE
         btnAddModule.setOnClickListener(new View.OnClickListener() {
@@ -138,10 +117,42 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback {
 
     private void refreshGridAdapter(){
         try {
-            gridView.setAdapter(new ModulesGridAdapter(getContext(), 0, FileHelper.readModules(getContext())));
+            gridView.setAdapter(new ModulesGridAdapter(getContext(), 0, DataAccess.getModulesByFavorites(false, getContext())));
+            gridViewFavorites.setAdapter(new ModulesGridAdapter(getContext(), 0, DataAccess.getModulesByFavorites(true, getContext())));
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    //MODULE CLICK
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        TextView tvId = ((TextView) (view.findViewById(R.id.tvModuleId)));
+        long moduleId = Long.parseLong(tvId.getText().toString());
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(getString(R.string.sp_active_module_id), moduleId);
+        editor.commit();
+
+        //redirect to scan
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController.navigate(R.id.navigation_scan);
+    }
+
+    //MODULE LONG CLICK
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        TextView tvId = ((TextView) (view.findViewById(R.id.tvModuleId)));
+        final long moduleId = Long.parseLong(tvId.getText().toString());
+
+        try {
+            modulesViewModel.setModule(Module.getById(moduleId, getContext()));
+            //dialogEdit.setModule(DataAccess.getModules(getContext()).get((int)moduleId - 1));
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        showEditDialog();
+        return true;
     }
 
     @Nullable
@@ -160,7 +171,6 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback {
         if (icons.size() > 0) {
             Icon icon = icons.get(0);
             modulesViewModel.changeIconId(icon.getId());
-            Toast.makeText(getContext(), "ICON: " + icon.getId(), Toast.LENGTH_SHORT).show();
         }
 
         showEditDialog();

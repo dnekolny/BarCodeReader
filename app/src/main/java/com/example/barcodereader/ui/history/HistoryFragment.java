@@ -5,8 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -15,9 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.barcodereader.R;
-import com.example.barcodereader.helpers.FileHelper;
-
-import java.io.IOException;
+import com.example.barcodereader.helpers.DataAccess;
 
 public class HistoryFragment extends Fragment {
 
@@ -40,7 +36,7 @@ public class HistoryFragment extends Fragment {
 
         listView = root.findViewById(R.id.listViewHistory);
         try {
-            listView.setAdapter(new HistoryListAdapter(getContext(), 0, FileHelper.readResults(getContext())));
+            listView.setAdapter(new HistoryListAdapter(getContext(), 0, DataAccess.getResults(getContext())));
         } catch (Exception e) {
             e.printStackTrace();
         }

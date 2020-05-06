@@ -15,13 +15,15 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileHelper {
+import androidx.core.content.ContextCompat;
+
+public class DataAccess {
 
     private static final String RESULTS_FILE_NAME = "results.obj";
     private static final String MODULES_FILE_NAME = "modules.obj";
 
     /**RESULTS*/
-    public static void writeResults(List<ScanResult> results, Context context) throws IOException {
+    public static void saveResults(List<ScanResult> results, Context context) throws IOException {
 
         try (FileOutputStream fos = context.openFileOutput(RESULTS_FILE_NAME, Context.MODE_PRIVATE)) {
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -30,7 +32,7 @@ public class FileHelper {
         }
     }
 
-    public static List<ScanResult> readResults(Context context) throws IOException, ClassNotFoundException {
+    public static List<ScanResult> getResults(Context context) throws IOException, ClassNotFoundException {
 
         try {
             FileInputStream fis = context.openFileInput(RESULTS_FILE_NAME);
@@ -46,10 +48,10 @@ public class FileHelper {
         }
     }
 
-    public static void writeResult(ScanResult result, Context context) throws IOException, ClassNotFoundException {
-        List<ScanResult> results = readResults(context);
+    public static void saveResult(ScanResult result, Context context) throws IOException, ClassNotFoundException {
+        List<ScanResult> results = getResults(context);
         results.add(result);
-        writeResults(results, context);
+        saveResults(results, context);
     }
 
     public static boolean removeResults(Context context) {
@@ -58,7 +60,7 @@ public class FileHelper {
 
 
     /**MODULES*/
-    public static void writeModules(List<Module> modules, Context context) throws IOException {
+    public static void saveModules(List<Module> modules, Context context) throws IOException {
 
         try (FileOutputStream fos = context.openFileOutput(MODULES_FILE_NAME, Context.MODE_PRIVATE)) {
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -67,31 +69,42 @@ public class FileHelper {
         }
     }
 
-    public static List<Module> readModules(Context context) throws IOException, ClassNotFoundException {
+    public static List<Module> getModules(Context context) throws IOException, ClassNotFoundException {
 
         //return getTestModules();
-
         try {
             FileInputStream fis = context.openFileInput(MODULES_FILE_NAME);
             ObjectInputStream ois = new ObjectInputStream(fis);
             List<Module> modules = (List<Module>) ois.readObject();
             if(modules.size() < 1){
-                modules = writeDefaultModules(context);
+                modules = saveDefaultModules(context);
             }
             ois.close();
             return modules;
         } catch (FileNotFoundException e) {
-            return writeDefaultModules(context);
+            return saveDefaultModules(context);
         } catch (InvalidClassException e) { //data v souboru neodpovídají objektu
             removeModules(context);
             return new ArrayList<>();
         }
+    }
 
+    public static List<Module> getModulesByFavorites(boolean favorite, Context context) throws IOException, ClassNotFoundException {
+        List<Module> all = getModules(context);
+        List<Module> modules = new ArrayList<>();
+
+        for (Module m :
+                all) {
+            if(m.isFavorite() == favorite){
+                modules.add(m);
+            }
+        }
+        return modules;
     }
 
     ///Save or Update module
-    public static void writeModule(Module module, Context context) throws IOException, ClassNotFoundException {
-        List<Module> modules = readModules(context);
+    public static void saveModule(Module module, Context context) throws IOException, ClassNotFoundException {
+        List<Module> modules = getModules(context);
 
         boolean mFind = false;
         for (int i = 0; i < modules.size() && !mFind; i++) {
@@ -104,11 +117,11 @@ public class FileHelper {
         if(!mFind){
             modules.add(module);
         }
-        writeModules(modules, context);
+        saveModules(modules, context);
     }
 
     public static void removeModule(long id, Context context) throws IOException, ClassNotFoundException {
-        List<Module> modules = readModules(context);
+        List<Module> modules = getModules(context);
 
         boolean mFind = false;
         for (int i = 0; i < modules.size() && !mFind; i++) {
@@ -118,16 +131,16 @@ public class FileHelper {
                 mFind = true;
             }
         }
-        writeModules(modules, context);
+        saveModules(modules, context);
     }
 
     public static boolean removeModules(Context context) {
         return context.deleteFile(MODULES_FILE_NAME);
     }
 
-    private static List<Module> writeDefaultModules(Context context) throws IOException {
+    private static List<Module> saveDefaultModules(Context context) throws IOException {
         List<Module> modules = Module.getDefaultModules();
-        writeModules(modules, context);
+        saveModules(modules, context);
         return modules;
     }
 

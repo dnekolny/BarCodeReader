@@ -6,15 +6,12 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.example.barcodereader.R;
-import com.example.barcodereader.helpers.FileHelper;
+import com.example.barcodereader.helpers.DataAccess;
 import com.example.barcodereader.model.ScanResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.zxing.Result;
 
 
@@ -62,7 +59,7 @@ public class ZXingResultHandler implements ZXingScannerView.ResultHandler {
                     public void onSuccess(Location location) {
 
                         try {
-                            FileHelper.writeResult(ScanResult.create(rawResult, location), context);
+                            DataAccess.saveResult(ScanResult.create(rawResult, location), context);
 
                             Toast.makeText(context, "RESULT SAVED", Toast.LENGTH_LONG).show();
                         } catch (Exception e) {

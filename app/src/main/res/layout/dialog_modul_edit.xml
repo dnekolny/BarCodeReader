@@ -65,8 +65,8 @@
             android:layout_height="200dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="15dp"
-            app:palette="@drawable/palette"
-            app:selector="@drawable/wheel" />
+            app:alpha_flag="0.8"
+            app:preferenceName="MyColorPicker" />
 
         <LinearLayout
             android:layout_width="wrap_content"

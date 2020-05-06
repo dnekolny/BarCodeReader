@@ -3,7 +3,7 @@ package com.example.barcodereader.model;
 import android.content.Context;
 
 import com.example.barcodereader.helpers.DataHelper;
-import com.example.barcodereader.helpers.FileHelper;
+import com.example.barcodereader.helpers.DataAccess;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -29,7 +29,7 @@ public class Module implements Serializable {
     }
 
     public static Module getById(long id, Context context) throws IOException, ClassNotFoundException {
-        List<Module> modules = FileHelper.readModules(context);
+        List<Module> modules = DataAccess.getModules(context);
         for (Module m :
                 modules) {
             if (m.getId() == id) {
