@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.barcodereader.model.Module;
 import com.example.barcodereader.model.ScanResult;
+import com.example.barcodereader.model.Setting;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,12 +16,12 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.core.content.ContextCompat;
 
 public class DataAccess {
 
     private static final String RESULTS_FILE_NAME = "results.obj";
     private static final String MODULES_FILE_NAME = "modules.obj";
+    private static final String SETTINGS_FILE_NAME = "settings.obj";
 
     /**RESULTS*/
     public static void saveResults(List<ScanResult> results, Context context) throws IOException {
@@ -156,5 +157,94 @@ public class DataAccess {
         modules.add(new Module(7, "MODULE7", 201, 0xFFFFFFFF, false));
 
         return modules;
+    }
+
+    /**SETTINGS*/
+    public static void saveSettings(List<Setting> settings, Context context) throws IOException {
+
+        try (FileOutputStream fos = context.openFileOutput(SETTINGS_FILE_NAME, Context.MODE_PRIVATE)) {
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(settings);
+            oos.close();
+        }
+    }
+
+    public static List<Setting> getSettings(Context context) throws IOException, ClassNotFoundException {
+
+        try {
+            FileInputStream fis = context.openFileInput(SETTINGS_FILE_NAME);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            List<Setting> settings = (List<Setting>) ois.readObject();
+            ois.close();
+            return settings;
+        } catch (FileNotFoundException e) {
+            return new ArrayList<>();
+        } catch (InvalidClassException e) { //data v souboru neodpovídají objektu
+            removeSettings(context);
+            return new ArrayList<>();
+        }
+    }
+
+    ///Save or Update setting
+    public static void saveSetting(Setting setting, Context context) throws IOException, ClassNotFoundException {
+        List<Setting> settings = getSettings(context);
+
+        boolean mFind = false;
+        for (int i = 0; i < settings.size() && !mFind; i++) {
+            Setting m = settings.get(i);
+            if(m.getId() == setting.getId()){
+                settings.set(i, setting);
+                mFind = true;
+            }
+        }
+        if(!mFind){
+            settings.add(setting);
+        }
+        saveSettings(settings, context);
+    }
+
+    public static void removeSetting(long id, Context context) throws IOException, ClassNotFoundException {
+        List<Setting> settings = getSettings(context);
+
+        boolean mFind = false;
+        for (int i = 0; i < settings.size() && !mFind; i++) {
+            Setting m = settings.get(i);
+            if(m.getId() == id){
+                settings.remove(i);
+                mFind = true;
+            }
+        }
+        saveSettings(settings, context);
+    }
+
+    public static boolean removeSettings(Context context) {
+        return context.deleteFile(SETTINGS_FILE_NAME);
+    }
+
+    public static Setting getSettingByModule(long moduleId, Context context) throws IOException, ClassNotFoundException {
+        if(moduleId > -1){
+            List<Setting> settings = getSettings(context);
+            for (Setting setting :
+                    settings) {
+                if(setting.getIdModule() == moduleId){
+                    return setting;
+                }
+            }
+        }
+        return saveDefaultSetting(moduleId, context);
+    }
+
+    private static Setting saveDefaultSetting(long moduleId, Context context) throws IOException, ClassNotFoundException {
+        Setting setting = new Setting(
+                DataHelper.getRandomLong(),
+                moduleId,
+                "0",
+                false,
+                true,
+                true,
+                true
+        );
+        saveSetting(setting, context);
+        return setting;
     }
 }

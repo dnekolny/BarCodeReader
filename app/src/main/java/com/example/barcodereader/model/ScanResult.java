@@ -15,6 +15,12 @@ public class ScanResult implements Serializable {
     private BarcodeFormat format;
     private long timestamp;
 
+    /* TODO add
+    private int idModule;
+    private int iconId;
+    private int color;
+    */
+
     private double latitude;
     private double longitude;
 
