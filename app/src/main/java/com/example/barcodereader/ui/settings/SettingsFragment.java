@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -21,13 +22,16 @@ import android.widget.TextView;
 import com.example.barcodereader.R;
 import com.example.barcodereader.helpers.DataAccess;
 import com.example.barcodereader.model.CameraItem;
+import com.example.barcodereader.model.SearchSetting;
 import com.example.barcodereader.model.Setting;
+import com.example.barcodereader.ui.extensions.ExpandableHeightListView;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -35,7 +39,9 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
     private Spinner spinnerCamera;
     private Switch switchSound, switchVibration, switchChromeTabs, switchUseUrl;
     private TextView tvVersion;
-    private ListView listViewSearch;
+    private ImageView btnAddSearchSetting;
+    private ExpandableHeightListView listViewSearch;
+    private SettingSearchListAdapter searchListAdapter;
 
     private SharedPreferences sharedPref;
     private Setting setting;
@@ -58,7 +64,13 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         switchChromeTabs = root.findViewById(R.id.switchChromeTabs);
         switchUseUrl = root.findViewById(R.id.switchUrl);
         tvVersion = root.findViewById(R.id.textViewAppVersion);
+
         listViewSearch = root.findViewById(R.id.listViewSettingSearch);
+        listViewSearch.setExpanded(true);
+        btnAddSearchSetting = root.findViewById(R.id.btnAddSearchSetting);
+
+        btnAddSearchSetting.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent));
+        btnAddSearchSetting.setOnClickListener(this);
 
         switchSound.setOnClickListener(this);
         switchVibration.setOnClickListener(this);
@@ -85,7 +97,8 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         switchUseUrl.setChecked(setting.isUseUrl());
 
         //LIST VIEW SEARCH
-        listViewSearch.setAdapter(new SettingSearchListAdapter(getContext(), 0, setting.getSearchSettings()));
+        searchListAdapter = new SettingSearchListAdapter(getContext(), 0, setting.getSearchSettings());
+        listViewSearch.setAdapter(searchListAdapter);
 
         //VERSION
         try {
@@ -139,6 +152,9 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
                 break;
             case R.id.switchUrl:
                 setting.setUseUrl(switchUseUrl.isChecked());
+                break;
+            case R.id.btnAddSearchSetting:
+                searchListAdapter.add(SearchSetting.getDefaultSearchSetting());
                 break;
         }
     }

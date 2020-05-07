@@ -6,13 +6,15 @@
     <Spinner
         android:id="@+id/spinnerSettingCodeTypes"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog" />
 
     <EditText
         android:id="@+id/editTextSettingSearchUrl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="@dimen/settings_item_space"
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine" />

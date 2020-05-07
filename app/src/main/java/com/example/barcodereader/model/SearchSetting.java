@@ -1,17 +1,26 @@
 package com.example.barcodereader.model;
 
+import com.example.barcodereader.helpers.DataHelper;
+
 import java.io.Serializable;
 
 public class SearchSetting implements Serializable {
 
     private long id;
-    private int codeTypeId;
+    private BarcodeType codeType;
     private String url;
 
-    public SearchSetting(long id, int codeTypeId, String url) {
+    public SearchSetting(long id, BarcodeType codeType, String url) {
         this.id = id;
-        this.codeTypeId = codeTypeId;
+        this.codeType = codeType;
         this.url = url;
+    }
+
+    public static SearchSetting getDefaultSearchSetting() {
+        return new SearchSetting(
+                DataHelper.getRandomLong(),
+                BarcodeType.ALL,
+                "https://www.google.com/search?q={code}");
     }
 
     public long getId() {
@@ -22,12 +31,12 @@ public class SearchSetting implements Serializable {
         this.id = id;
     }
 
-    public int getCodeTypeId() {
-        return codeTypeId;
+    public BarcodeType getCodeType() {
+        return codeType;
     }
 
-    public void setCodeTypeId(int codeTypeId) {
-        this.codeTypeId = codeTypeId;
+    public void setCodeType(BarcodeType codeType) {
+        this.codeType = codeType;
     }
 
     public String getUrl() {

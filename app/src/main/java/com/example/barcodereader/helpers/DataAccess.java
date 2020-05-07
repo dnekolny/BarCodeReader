@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.barcodereader.model.Module;
 import com.example.barcodereader.model.ScanResult;
+import com.example.barcodereader.model.SearchSetting;
 import com.example.barcodereader.model.Setting;
 
 import java.io.FileInputStream;
@@ -227,6 +228,11 @@ public class DataAccess {
             for (Setting setting :
                     settings) {
                 if(setting.getIdModule() == moduleId){
+                    if(setting.getSearchSettings().size() < 1){
+                        List<SearchSetting> searchSettings = new ArrayList<>();
+                        searchSettings.add(SearchSetting.getDefaultSearchSetting());
+                        setting.setSearchSettings(searchSettings);
+                    }
                     return setting;
                 }
             }
@@ -235,6 +241,9 @@ public class DataAccess {
     }
 
     private static Setting saveDefaultSetting(long moduleId, Context context) throws IOException, ClassNotFoundException {
+        List<SearchSetting> searchSettings = new ArrayList<>();
+        searchSettings.add(SearchSetting.getDefaultSearchSetting());
+
         Setting setting = new Setting(
                 DataHelper.getRandomLong(),
                 moduleId,
@@ -242,8 +251,10 @@ public class DataAccess {
                 false,
                 true,
                 true,
-                true
+                true,
+                searchSettings
         );
+
         saveSetting(setting, context);
         return setting;
     }

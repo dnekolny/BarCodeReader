@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.barcodereader.R;
+import com.example.barcodereader.model.BarcodeType;
 import com.example.barcodereader.model.SearchSetting;
 
 import java.util.List;
@@ -29,16 +30,20 @@ public class SettingSearchListAdapter extends ArrayAdapter<SearchSetting> {
         SearchSetting item = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.listview_item_history, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.listview_item_setting, parent, false);
         }
 
         Spinner spinnerCodeType = convertView.findViewById(R.id.spinnerSettingCodeTypes);
         EditText editTextUrl = convertView.findViewById(R.id.editTextSettingSearchUrl);
 
+        ArrayAdapter<BarcodeType> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, BarcodeType.values());
+        spinnerCodeType.setAdapter(adapter);
+        spinnerCodeType.setSelection(adapter.getPosition(item.getCodeType()));
+        if(position == 0){
+            //disable first search setting
+            spinnerCodeType.setEnabled(false);
+        }
         editTextUrl.setText(item.getUrl());
-
-        /*tvValue.setText(item.getValue());
-        tvDate.setText(DataHelper.getDate(item.getTimestamp()) + " / " + item.getLatitude() + " / " + item.getLongitude());*/
 
         return convertView;
     }

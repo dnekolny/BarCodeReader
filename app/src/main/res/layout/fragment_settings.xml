@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="55dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,7 +44,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/settings_item_space">
+                android:layout_marginBottom="4dp">
 
                 <Spinner
                     android:id="@+id/spinnerCamera"
@@ -170,15 +171,26 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="end"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/settings_left_padding"
+            android:paddingLeft="15dp"
             android:paddingRight="@dimen/settings_right_padding">
 
 
-            <ListView
+            <com.example.barcodereader.ui.extensions.ExpandableHeightListView
                 android:id="@+id/listViewSettingSearch"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+
+            </com.example.barcodereader.ui.extensions.ExpandableHeightListView>
+
+            <ImageView
+                android:id="@+id/btnAddSearchSetting"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="10dp"
+                app:srcCompat="@drawable/ic_add_black_24dp" />
+
         </LinearLayout>
 
         <LinearLayout

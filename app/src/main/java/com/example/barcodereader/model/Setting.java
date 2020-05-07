@@ -1,7 +1,14 @@
 package com.example.barcodereader.model;
 
+import com.example.barcodereader.helpers.DataHelper;
+
 import java.io.Serializable;
+import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class Setting implements Serializable {
 
@@ -15,7 +22,7 @@ public class Setting implements Serializable {
 
     private List<SearchSetting> searchSettings;
 
-    public Setting(long idSetting, long idModule, String idCamera, boolean sound, boolean vibration, boolean chromeTabs, boolean useUrl) {
+    public Setting(long idSetting, long idModule, String idCamera, boolean sound, boolean vibration, boolean chromeTabs, boolean useUrl, List<SearchSetting> searchSettings) {
         this.id = idSetting;
         this.idModule = idModule;
         this.idCamera = idCamera;
@@ -23,6 +30,7 @@ public class Setting implements Serializable {
         this.vibration = vibration;
         this.chromeTabs = chromeTabs;
         this.useUrl = useUrl;
+        this.searchSettings = searchSettings;
     }
 
     public long getId() {
