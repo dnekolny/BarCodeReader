@@ -1,13 +1,18 @@
 package com.example.barcodereader.ui.scan;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.barcodereader.MapsActivity;
 import com.example.barcodereader.R;
 import com.example.barcodereader.helpers.DataAccess;
 import com.example.barcodereader.model.Module;
@@ -26,11 +31,15 @@ public class ScanFragment extends Fragment {
 
     private ZXingScannerView scanner;
     private SharedPreferences sharedPref;
+
     private Setting setting;
     private Module module;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        getActivity().setTitle(getString(R.string.title_scan));
+        setHasOptionsMenu(true);
 
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         try {
@@ -52,17 +61,41 @@ public class ScanFragment extends Fragment {
             }
         };
 
-        //TODO set camera
-        scanner.setAspectTolerance(0.8f);
+        //scanner.setAspectTolerance(0.8f);
 
         return scanner;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.scan_menu_buttons, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_scan_light) {
+            scanner.setFlash(!scanner.getFlash());
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         scanner.setResultHandler(new ZXingResultHandler(setting, module, getContext()));
-        scanner.startCamera();
+        try{
+            scanner.startCamera(Integer.parseInt(setting.getIdCamera()));
+        }
+        catch (NumberFormatException e) {
+            scanner.startCamera();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        scanner.setFlash(false);
+        super.onPause();
     }
 
     @Override

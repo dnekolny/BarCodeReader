@@ -52,6 +52,21 @@ public class DataAccess {
         }
     }
 
+    public static List<ScanResult> getResultsByModuleId(long currentModuleId, Context context) throws IOException, ClassNotFoundException {
+        List<ScanResult> all = getResults(context);
+        if (currentModuleId >= 0){
+            List<ScanResult> results = new ArrayList<>();
+            for (ScanResult result :
+                    all) {
+                if (result.getIdModule() == currentModuleId){
+                    results.add(result);
+                }
+            }
+            return results;
+        }
+        return all;
+    }
+
     public static void saveResult(ScanResult result, Context context) throws IOException, ClassNotFoundException {
         List<ScanResult> results = getResults(context);
         results.add(result);

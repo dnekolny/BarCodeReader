@@ -5,7 +5,13 @@
     <string name="title_history">History</string>
     <string name="title_settings">Settings</string>
 
-    <string name="sp_active_module_id">Settings</string>
+    <string name="sp_active_module_id">activeModule</string>
+    <string name="sp_history_current_module">historyCurrentModule</string>
+
     <string name="favorite_section">Favorite:</string>
     <string name="others_section">Others:</string>
+
+    <string name="history_switch">current module</string>
+
+    <string name="title_activity_maps">Map</string>
 </resources>

@@ -49,6 +49,9 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        getActivity().setTitle(getString(R.string.title_settings));
+
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
