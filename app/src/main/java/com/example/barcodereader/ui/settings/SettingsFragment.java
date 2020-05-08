@@ -97,7 +97,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         switchUseUrl.setChecked(setting.isUseUrl());
 
         //LIST VIEW SEARCH
-        searchListAdapter = new SettingSearchListAdapter(getContext(), 0, setting.getSearchSettings());
+        searchListAdapter = new SettingSearchListAdapter(getContext(), setting.getSearchSettings());
         listViewSearch.setAdapter(searchListAdapter);
 
         //VERSION
@@ -154,11 +154,15 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
                 setting.setUseUrl(switchUseUrl.isChecked());
                 break;
             case R.id.btnAddSearchSetting:
-                searchListAdapter.add(SearchSetting.getDefaultSearchSetting());
+                //searchListAdapter.add(SearchSetting.getDefaultSearchSetting(false));
+                setting.getSearchSettings().add(SearchSetting.getDefaultSearchSetting(false));
+                searchListAdapter = new SettingSearchListAdapter(getContext(), setting.getSearchSettings());
+                listViewSearch.setAdapter(searchListAdapter);
                 break;
         }
     }
 
+    //CAMERA
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         setting.setIdCamera(cameras.get(position).getId());
@@ -170,12 +174,13 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
         try {
             DataAccess.saveSetting(setting, getContext());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        super.onStop();
+
+        super.onDestroy();
     }
 }

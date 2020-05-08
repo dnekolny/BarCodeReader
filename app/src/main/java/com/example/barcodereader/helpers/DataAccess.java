@@ -230,7 +230,7 @@ public class DataAccess {
                 if(setting.getIdModule() == moduleId){
                     if(setting.getSearchSettings().size() < 1){
                         List<SearchSetting> searchSettings = new ArrayList<>();
-                        searchSettings.add(SearchSetting.getDefaultSearchSetting());
+                        searchSettings.add(SearchSetting.getDefaultSearchSetting(true));
                         setting.setSearchSettings(searchSettings);
                     }
                     return setting;
@@ -242,7 +242,7 @@ public class DataAccess {
 
     private static Setting saveDefaultSetting(long moduleId, Context context) throws IOException, ClassNotFoundException {
         List<SearchSetting> searchSettings = new ArrayList<>();
-        searchSettings.add(SearchSetting.getDefaultSearchSetting());
+        searchSettings.add(SearchSetting.getDefaultSearchSetting(true));
 
         Setting setting = new Setting(
                 DataHelper.getRandomLong(),

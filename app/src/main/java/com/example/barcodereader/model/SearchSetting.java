@@ -7,18 +7,21 @@ import java.io.Serializable;
 public class SearchSetting implements Serializable {
 
     private long id;
+    private boolean isDefault;
     private BarcodeType codeType;
     private String url;
 
-    public SearchSetting(long id, BarcodeType codeType, String url) {
+    public SearchSetting(long id, boolean isDefault, BarcodeType codeType, String url) {
         this.id = id;
+        this.isDefault = isDefault;
         this.codeType = codeType;
         this.url = url;
     }
 
-    public static SearchSetting getDefaultSearchSetting() {
+    public static SearchSetting getDefaultSearchSetting(boolean isDefault) {
         return new SearchSetting(
                 DataHelper.getRandomLong(),
+                isDefault,
                 BarcodeType.ALL,
                 "https://www.google.com/search?q={code}");
     }
@@ -45,5 +48,13 @@ public class SearchSetting implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
     }
 }
