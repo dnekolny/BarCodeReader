@@ -34,7 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, SettingSearchListAdapter.SettingSearchListAdapterHandler {
 
     private Spinner spinnerCamera;
     private Switch switchSound, switchVibration, switchChromeTabs, switchUseUrl;
@@ -83,6 +83,14 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         return root;
     }
 
+    public void saveSetting(){
+        try {
+            DataAccess.saveSetting(setting, getContext());
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void refreshUi(){
         //CAMERA
         ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, cameras);
@@ -97,7 +105,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         switchUseUrl.setChecked(setting.isUseUrl());
 
         //LIST VIEW SEARCH
-        searchListAdapter = new SettingSearchListAdapter(getContext(), setting.getSearchSettings());
+        searchListAdapter = new SettingSearchListAdapter(getContext(), setting.getSearchSettings(), this);
         listViewSearch.setAdapter(searchListAdapter);
 
         //VERSION
@@ -156,16 +164,18 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
             case R.id.btnAddSearchSetting:
                 //searchListAdapter.add(SearchSetting.getDefaultSearchSetting(false));
                 setting.getSearchSettings().add(SearchSetting.getDefaultSearchSetting(false));
-                searchListAdapter = new SettingSearchListAdapter(getContext(), setting.getSearchSettings());
+                searchListAdapter = new SettingSearchListAdapter(getContext(), setting.getSearchSettings(), this);
                 listViewSearch.setAdapter(searchListAdapter);
                 break;
         }
+        saveSetting();
     }
 
     //CAMERA
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         setting.setIdCamera(cameras.get(position).getId());
+        saveSetting();
     }
 
     @Override
@@ -173,14 +183,9 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         //DO NOTHING
     }
 
+    //Search item changed
     @Override
-    public void onDestroy() {
-        try {
-            DataAccess.saveSetting(setting, getContext());
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        super.onDestroy();
+    public void onItemChanged() {
+        saveSetting();
     }
 }

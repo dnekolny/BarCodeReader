@@ -24,7 +24,9 @@ public class DataAccess {
     private static final String MODULES_FILE_NAME = "modules.obj";
     private static final String SETTINGS_FILE_NAME = "settings.obj";
 
-    /**RESULTS*/
+    /**
+     * RESULTS
+     */
     public static void saveResults(List<ScanResult> results, Context context) throws IOException {
 
         try (FileOutputStream fos = context.openFileOutput(RESULTS_FILE_NAME, Context.MODE_PRIVATE)) {
@@ -61,7 +63,9 @@ public class DataAccess {
     }
 
 
-    /**MODULES*/
+    /**
+     * MODULES
+     */
     public static void saveModules(List<Module> modules, Context context) throws IOException {
 
         try (FileOutputStream fos = context.openFileOutput(MODULES_FILE_NAME, Context.MODE_PRIVATE)) {
@@ -78,7 +82,7 @@ public class DataAccess {
             FileInputStream fis = context.openFileInput(MODULES_FILE_NAME);
             ObjectInputStream ois = new ObjectInputStream(fis);
             List<Module> modules = (List<Module>) ois.readObject();
-            if(modules.size() < 1){
+            if (modules.size() < 1) {
                 modules = saveDefaultModules(context);
             }
             ois.close();
@@ -97,38 +101,51 @@ public class DataAccess {
 
         for (Module m :
                 all) {
-            if(m.isFavorite() == favorite){
+            if (m.isFavorite() == favorite) {
                 modules.add(m);
             }
         }
         return modules;
     }
 
+    public static Module getModuleById(long moduleId, Context context) throws IOException, ClassNotFoundException {
+        List<Module> modules = getModules(context);
+        for (Module m :
+                modules) {
+            if (m.getId() == moduleId) {
+                return m;
+            }
+        }
+        return null;
+    }
+
     ///Save or Update module
-    public static void saveModule(Module module, Context context) throws IOException, ClassNotFoundException {
+    public static void saveModule(Module module, Context context) throws
+            IOException, ClassNotFoundException {
         List<Module> modules = getModules(context);
 
         boolean mFind = false;
         for (int i = 0; i < modules.size() && !mFind; i++) {
             Module m = modules.get(i);
-            if(m.getId() == module.getId()){
+            if (m.getId() == module.getId()) {
                 modules.set(i, module);
                 mFind = true;
             }
         }
-        if(!mFind){
+        if (!mFind) {
             modules.add(module);
         }
         saveModules(modules, context);
     }
 
-    public static void removeModule(long id, Context context) throws IOException, ClassNotFoundException {
+    public static void removeModule(long id, Context context) throws
+            IOException, ClassNotFoundException {
         List<Module> modules = getModules(context);
 
         boolean mFind = false;
         for (int i = 0; i < modules.size() && !mFind; i++) {
             Module m = modules.get(i);
-            if(m.getId() == id){
+            if (m.getId() == id) {
                 modules.remove(i);
                 mFind = true;
             }
@@ -160,8 +177,11 @@ public class DataAccess {
         return modules;
     }
 
-    /**SETTINGS*/
-    public static void saveSettings(List<Setting> settings, Context context) throws IOException {
+    /**
+     * SETTINGS
+     */
+    public static void saveSettings(List<Setting> settings, Context context) throws
+            IOException {
 
         try (FileOutputStream fos = context.openFileOutput(SETTINGS_FILE_NAME, Context.MODE_PRIVATE)) {
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -170,7 +190,8 @@ public class DataAccess {
         }
     }
 
-    public static List<Setting> getSettings(Context context) throws IOException, ClassNotFoundException {
+    public static List<Setting> getSettings(Context context) throws
+            IOException, ClassNotFoundException {
 
         try {
             FileInputStream fis = context.openFileInput(SETTINGS_FILE_NAME);
@@ -187,30 +208,32 @@ public class DataAccess {
     }
 
     ///Save or Update setting
-    public static void saveSetting(Setting setting, Context context) throws IOException, ClassNotFoundException {
+    public static void saveSetting(Setting setting, Context context) throws
+            IOException, ClassNotFoundException {
         List<Setting> settings = getSettings(context);
 
         boolean mFind = false;
         for (int i = 0; i < settings.size() && !mFind; i++) {
             Setting m = settings.get(i);
-            if(m.getId() == setting.getId()){
+            if (m.getId() == setting.getId()) {
                 settings.set(i, setting);
                 mFind = true;
             }
         }
-        if(!mFind){
+        if (!mFind) {
             settings.add(setting);
         }
         saveSettings(settings, context);
     }
 
-    public static void removeSetting(long id, Context context) throws IOException, ClassNotFoundException {
+    public static void removeSetting(long id, Context context) throws
+            IOException, ClassNotFoundException {
         List<Setting> settings = getSettings(context);
 
         boolean mFind = false;
         for (int i = 0; i < settings.size() && !mFind; i++) {
             Setting m = settings.get(i);
-            if(m.getId() == id){
+            if (m.getId() == id) {
                 settings.remove(i);
                 mFind = true;
             }
@@ -222,13 +245,14 @@ public class DataAccess {
         return context.deleteFile(SETTINGS_FILE_NAME);
     }
 
-    public static Setting getSettingByModule(long moduleId, Context context) throws IOException, ClassNotFoundException {
-        if(moduleId > -1){
+    public static Setting getSettingByModule(long moduleId, Context context) throws
+            IOException, ClassNotFoundException {
+        if (moduleId > -1) {
             List<Setting> settings = getSettings(context);
             for (Setting setting :
                     settings) {
-                if(setting.getIdModule() == moduleId){
-                    if(setting.getSearchSettings().size() < 1){
+                if (setting.getIdModule() == moduleId) {
+                    if (setting.getSearchSettings().size() < 1) {
                         List<SearchSetting> searchSettings = new ArrayList<>();
                         searchSettings.add(SearchSetting.getDefaultSearchSetting(true));
                         setting.setSearchSettings(searchSettings);
@@ -240,7 +264,8 @@ public class DataAccess {
         return saveDefaultSetting(moduleId, context);
     }
 
-    private static Setting saveDefaultSetting(long moduleId, Context context) throws IOException, ClassNotFoundException {
+    private static Setting saveDefaultSetting(long moduleId, Context context) throws
+            IOException, ClassNotFoundException {
         List<SearchSetting> searchSettings = new ArrayList<>();
         searchSettings.add(SearchSetting.getDefaultSearchSetting(true));
 

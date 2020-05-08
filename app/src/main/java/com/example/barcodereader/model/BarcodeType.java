@@ -1,5 +1,7 @@
 package com.example.barcodereader.model;
 
+import com.google.zxing.BarcodeFormat;
+
 public enum BarcodeType {
 
     ALL("All formats"),
@@ -82,7 +84,7 @@ public enum BarcodeType {
     /**
      * UPC-E 1D format.
      */
-    UPC_E("UPC-E 1D "),
+    UPC_E("UPC-E 1D"),
 
     /**
      * UPC/EAN extension format. Not a stand-alone format.
@@ -97,6 +99,16 @@ public enum BarcodeType {
 
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
+    public static BarcodeType getTypeFromFormat(BarcodeFormat format){
+        BarcodeType type = BarcodeType.valueOf(format.name());
+        return type;
     }
 
 }

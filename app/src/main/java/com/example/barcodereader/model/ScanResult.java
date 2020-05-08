@@ -15,21 +15,26 @@ public class ScanResult implements Serializable {
     private BarcodeFormat format;
     private long timestamp;
 
-    /* TODO add
-    private int idModule;
+    private long idModule;
     private int iconId;
     private int color;
-    */
 
     private double latitude;
     private double longitude;
 
-    public static ScanResult create(Result rawResult, Location location){
+    public static ScanResult create(Result rawResult, Module module, Location location){
         ScanResult result = new ScanResult();
         result.id = DataHelper.getRandomLong();
         result.value = rawResult.getText();
         result.format = rawResult.getBarcodeFormat();
         result.timestamp = rawResult.getTimestamp();
+
+        if(module != null){
+            result.idModule = module.getId();
+            result.iconId = module.getIconId();
+            result.color = module.getColor();
+        }
+
         if(location != null){
             result.longitude = location.getLongitude();
             result.latitude = location.getLatitude();
@@ -83,5 +88,29 @@ public class ScanResult implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public long getIdModule() {
+        return idModule;
+    }
+
+    public void setIdModule(long idModule) {
+        this.idModule = idModule;
+    }
+
+    public int getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(int iconId) {
+        this.iconId = iconId;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }

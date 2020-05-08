@@ -1,14 +1,10 @@
 package com.example.barcodereader.model;
 
-import com.example.barcodereader.helpers.DataHelper;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Result;
 
 import java.io.Serializable;
-import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
-
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class Setting implements Serializable {
 
@@ -31,6 +27,19 @@ public class Setting implements Serializable {
         this.chromeTabs = chromeTabs;
         this.useUrl = useUrl;
         this.searchSettings = searchSettings;
+    }
+
+    public String findCorrectUrl(BarcodeFormat format){
+        BarcodeType type = BarcodeType.getTypeFromFormat(format);
+
+        for (int i = searchSettings.size() - 1; i >= 0; i--) {
+            SearchSetting searchSetting = searchSettings.get(i);
+
+            if(searchSetting.getCodeType().equals(type)){
+                return searchSetting.getUrl();
+            }
+        }
+        return searchSettings.get(0).getUrl();
     }
 
     public long getId() {
