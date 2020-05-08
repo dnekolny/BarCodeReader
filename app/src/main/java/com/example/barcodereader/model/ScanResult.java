@@ -7,11 +7,13 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 public class ScanResult implements Serializable {
 
     private long id;
     private String value;
+    private String url;
     private BarcodeFormat format;
     private long timestamp;
 
@@ -22,12 +24,13 @@ public class ScanResult implements Serializable {
     private double latitude;
     private double longitude;
 
-    public static ScanResult create(Result rawResult, Module module, Location location){
+    public static ScanResult create(Result rawResult, Module module, Location location, String url){
         ScanResult result = new ScanResult();
         result.id = DataHelper.getRandomLong();
         result.value = rawResult.getText();
         result.format = rawResult.getBarcodeFormat();
         result.timestamp = rawResult.getTimestamp();
+        result.url = url;
 
         if(module != null){
             result.idModule = module.getId();
@@ -112,5 +115,13 @@ public class ScanResult implements Serializable {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

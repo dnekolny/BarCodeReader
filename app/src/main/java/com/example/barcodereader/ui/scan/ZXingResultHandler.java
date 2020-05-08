@@ -62,7 +62,6 @@ public class ZXingResultHandler implements ZXingScannerView.ResultHandler {
         }
 
         showResult(rawResult);
-        saveResultAsync(rawResult);
     }
 
     private void showResult(Result rawResult) {
@@ -80,11 +79,13 @@ public class ZXingResultHandler implements ZXingScannerView.ResultHandler {
             url = setting.findCorrectUrl(rawResult.getBarcodeFormat()).replace("{code}", rawResult.getText());
         }
 
+        saveResultAsync(rawResult, url);
+
         CustomTabsIntent intent = builder.build();
         intent.launchUrl(context, Uri.parse(url));
     }
 
-    private void saveResultAsync(final Result rawResult) {
+    private void saveResultAsync(final Result rawResult, final String url) {
 
         Thread thread = new Thread() {
             @Override
@@ -94,7 +95,7 @@ public class ZXingResultHandler implements ZXingScannerView.ResultHandler {
                     public void onSuccess(Location location) {
 
                         try {
-                            DataAccess.saveResult(ScanResult.create(rawResult, module, location), context);
+                            DataAccess.saveResult(ScanResult.create(rawResult, module, location, url), context);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

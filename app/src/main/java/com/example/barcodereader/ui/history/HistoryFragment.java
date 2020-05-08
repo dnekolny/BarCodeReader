@@ -14,29 +14,32 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.barcodereader.R;
 import com.example.barcodereader.helpers.DataAccess;
+import com.example.barcodereader.model.ScanResult;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class HistoryFragment extends Fragment {
 
-    private HistoryViewModel historyViewModel;
 
     private ListView listView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        historyViewModel =
-                ViewModelProviders.of(this).get(HistoryViewModel.class);
         View root = inflater.inflate(R.layout.fragment_history, container, false);
-        //final TextView textView = root.findViewById(R.id.text_history);
-        historyViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                //textView.setText(s);
-            }
-        });
 
         listView = root.findViewById(R.id.listViewHistory);
         try {
-            listView.setAdapter(new HistoryListAdapter(getContext(), 0, DataAccess.getResults(getContext())));
+            List<ScanResult> results = DataAccess.getResults(getContext());
+            Collections.sort(results, new Comparator<ScanResult>() {
+                @Override
+                public int compare(ScanResult s1, ScanResult s2) {
+                    return Long.compare(s2.getTimestamp(), s1.getTimestamp());
+                }
+            });
+
+            listView.setAdapter(new HistoryListAdapter(getContext(), 0, results));
         } catch (Exception e) {
             e.printStackTrace();
         }

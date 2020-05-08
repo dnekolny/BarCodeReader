@@ -12,9 +12,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ToggleButton;
 
-import com.example.barcodereader.App;
 import com.example.barcodereader.R;
 import com.example.barcodereader.helpers.DataAccess;
+import com.example.barcodereader.model.IconList;
 import com.example.barcodereader.model.Module;
 import com.maltaisn.icondialog.IconDialog;
 import com.maltaisn.icondialog.IconDialogSettings;
@@ -47,6 +47,7 @@ public class ModulesDialogEdit extends Dialog implements android.view.View.OnCli
 
     private boolean isCreated = false;
     private Module module;
+    private IconList iconList;
     private ModuleDialogEditHandler handler;
     private ModulesDialogEdit thisDialog;
 
@@ -71,6 +72,8 @@ public class ModulesDialogEdit extends Dialog implements android.view.View.OnCli
         editTextName = (EditText) findViewById(R.id.editTextDialogModulName);
         btnDelete = (ImageView) findViewById(R.id.imageButtonModuleDelete);
         colorPickerView = (ColorPickerView) findViewById(R.id.colorPickerView);
+
+        iconList = IconList.getInstance(getContext());
 
         isCreated = true;
         refreshUi();
@@ -97,7 +100,7 @@ public class ModulesDialogEdit extends Dialog implements android.view.View.OnCli
 
     private void refreshUi() {
         if(isCreated && module != null){
-            imgIcon.setImageDrawable(((App)activity.getApplication()).getIconDrawable(module.getIconId()));
+            imgIcon.setImageDrawable(iconList.getIconDrawable(module.getIconId()));
             imgIcon.setColorFilter(module.getColor());
             colorPickerView.selectCenter();
             colorPickerView.setPureColor(module.getColor()); //nefunguje

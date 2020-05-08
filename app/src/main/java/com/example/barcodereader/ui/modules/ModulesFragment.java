@@ -8,13 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.barcodereader.App;
 import com.example.barcodereader.R;
 import com.example.barcodereader.helpers.DataAccess;
+import com.example.barcodereader.model.IconList;
 import com.example.barcodereader.model.Module;
 import com.example.barcodereader.ui.extensions.ExpandableHeightGridView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -43,10 +41,13 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback, Ad
     private FloatingActionButton btnAddModule;
     private ModulesDialogEdit dialogEdit;
     private ModulesDialogEdit.ModuleDialogEditHandler dialogHandler;
+    private IconList iconList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+        iconList = IconList.getInstance(getContext());
 
         modulesViewModel = ViewModelProviders.of(this).get(ModulesViewModel.class);
         View root = inflater.inflate(R.layout.fragment_modules, container, false);
@@ -158,7 +159,7 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback, Ad
     @Nullable
     @Override
     public IconPack getIconDialogIconPack() {
-        return ((App) getActivity().getApplication()).getIconPack();
+        return iconList.getIconPack();
     }
 
     @Override

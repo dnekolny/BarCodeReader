@@ -8,8 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.barcodereader.App;
 import com.example.barcodereader.R;
+import com.example.barcodereader.model.IconList;
 import com.example.barcodereader.model.Module;
 import com.maltaisn.icondialog.data.Icon;
 
@@ -19,9 +19,11 @@ import androidx.annotation.NonNull;
 
 public class ModulesGridAdapter extends ArrayAdapter<Module> {
 
+    private IconList iconList;
 
     public ModulesGridAdapter(@NonNull Context context, int resource, @NonNull List<Module> objects) {
         super(context, resource, objects);
+        iconList = IconList.getInstance(getContext());
     }
 
     @Override
@@ -37,7 +39,7 @@ public class ModulesGridAdapter extends ArrayAdapter<Module> {
         TextView tvName = (TextView) convertView.findViewById(R.id.tvModuleName);
         TextView tvId = (TextView) convertView.findViewById(R.id.tvModuleId);
 
-        Icon icon = ((App) App.getApp()).getIconPack().getIcon(item.getIconId());
+        Icon icon = iconList.getIconPack().getIcon(item.getIconId());
         if (icon != null) {
             imageView.setImageDrawable(icon.getDrawable());
         }
