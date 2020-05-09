@@ -54,12 +54,14 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getActivity().getSharedPreferences(getString(R.string.sp_name), Context.MODE_PRIVATE);
         try {
             setting = DataAccess.getSettingByModule(sharedPref.getLong(getString(R.string.sp_active_module_id), -1), getContext());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        //TODO dark mode
 
         spinnerCamera = root.findViewById(R.id.spinnerCamera);
         switchSound = root.findViewById(R.id.switchSound);

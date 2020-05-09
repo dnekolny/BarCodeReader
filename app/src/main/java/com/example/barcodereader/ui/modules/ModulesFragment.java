@@ -48,7 +48,7 @@ public class ModulesFragment extends Fragment implements IconDialog.Callback, Ad
 
         getActivity().setTitle(getString(R.string.title_modules));
 
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getActivity().getSharedPreferences(getString(R.string.sp_name), Context.MODE_PRIVATE);
 
         iconList = IconList.getInstance(getContext());
 

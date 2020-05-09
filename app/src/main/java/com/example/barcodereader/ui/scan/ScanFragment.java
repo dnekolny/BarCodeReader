@@ -41,9 +41,9 @@ public class ScanFragment extends Fragment {
         getActivity().setTitle(getString(R.string.title_scan));
         setHasOptionsMenu(true);
 
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getActivity().getSharedPreferences(getString(R.string.sp_name), Context.MODE_PRIVATE);
         try {
-            long moduleId = sharedPref.getLong(getString(R.string.sp_active_module_id), 0);
+            long moduleId = sharedPref.getLong(getString(R.string.sp_active_module_id), -1);
             module = DataAccess.getModuleById(moduleId, getContext());
             setting = DataAccess.getSettingByModule(moduleId, getContext());
         } catch (IOException | ClassNotFoundException e) {
@@ -84,23 +84,28 @@ public class ScanFragment extends Fragment {
     public void onResume() {
         super.onResume();
         scanner.setResultHandler(new ZXingResultHandler(setting, module, getContext()));
-        try{
+        try {
             scanner.startCamera(Integer.parseInt(setting.getIdCamera()));
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             scanner.startCamera();
         }
     }
 
     @Override
     public void onPause() {
-        scanner.setFlash(false);
+        try {
+            scanner.setFlash(false);
+        } catch (Exception ignored) {
+        }
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        scanner.stopCamera();
+        try {
+            scanner.stopCamera();
+        } catch (Exception ignored) {
+        }
         super.onDestroy();
     }
 

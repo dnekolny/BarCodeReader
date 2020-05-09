@@ -1,15 +1,23 @@
 package com.example.barcodereader;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.hardware.biometrics.BiometricPrompt;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.example.barcodereader.biometric.BiometricCallback;
+import com.example.barcodereader.biometric.BiometricManager;
+import com.example.barcodereader.helpers.DataAccess;
+import com.example.barcodereader.model.Module;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,18 +25,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BiometricCallback {
 
     public static final int MAIN_REQUEST_CODE = 5485;
 
     private static NavController navController;
+    private SharedPreferences sharedPref;
+    BiometricManager mBiometricManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,32 +47,114 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarMain);
-        /*MenuItem menuItem = findViewById(R.id.action_history_map);
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_map_black_24dp, null);
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.colorText));
-        menuItem.setIcon(drawable);*/
         setSupportActionBar(toolbar);
 
+        sharedPref = getSharedPreferences(getString(R.string.sp_name), Context.MODE_PRIVATE);
+
         checkPermissions();
+
+        //TODO check if is enabled in setting
+        boolean fingerprintEnable = sharedPref.getBoolean(getString(R.string.sp_fingerprint_enable), false);
+        if (fingerprintEnable) {
+            showFingerPrintDialog();
+        }
+
+        //SET DEFAULT MODULE
+        long moduleId = sharedPref.getLong(getString(R.string.sp_active_module_id), -1);
+        if (moduleId == -1) {
+            try {
+                List<Module> modules = DataAccess.getModules(this);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putLong(getString(R.string.sp_active_module_id), modules.get(0).getId());
+                editor.commit();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    private void checkPermissions(){
+    private void showFingerPrintDialog() {
+        mBiometricManager = new BiometricManager.BiometricBuilder(MainActivity.this)
+                .setTitle(getString(R.string.biometric_title))
+                .setSubtitle(getString(R.string.biometric_subtitle))
+                .setDescription(getString(R.string.biometric_description))
+                .setNegativeButtonText(getString(R.string.biometric_negative_button_text))
+                .build();
+
+        //start authentication
+        mBiometricManager.authenticate(MainActivity.this);
+    }
+
+    private void checkPermissions() {
         List<String> permissions = new ArrayList<>();
 
         //CAMERA PERMISSION
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
             permissions.add(Manifest.permission.CAMERA);
         }
 
         //GPS PERMISSION
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
             permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
 
-        if(permissions.size() > 0){
+        //FINGERPRINT PERMISSION
+        /*if (BiometricUtils.isBiometricPromptEnabled()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_BIOMETRIC) == PackageManager.PERMISSION_DENIED) {
+                permissions.add(Manifest.permission.USE_BIOMETRIC);
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_DENIED) {
+                permissions.add(Manifest.permission.USE_FINGERPRINT);
+            }
+        }*/
+
+        if (permissions.size() > 0) {
             ActivityCompat.requestPermissions(this, permissions.toArray(new String[0]), MAIN_REQUEST_CODE);
         }
+    }
+
+    //FINGER PRINT
+    @Override
+    public void onSdkVersionNotSupported() {
+    }
+
+    @Override
+    public void onBiometricAuthenticationNotSupported() {
+    }
+
+    @Override
+    public void onBiometricAuthenticationNotAvailable() {
+    }
+
+    @Override
+    public void onBiometricAuthenticationPermissionNotGranted() {
+    }
+
+    @Override
+    public void onBiometricAuthenticationInternalError(String error) {
+    }
+
+    @Override
+    public void onAuthenticationFailed() {
+        finish();
+    }
+
+    @Override
+    public void onAuthenticationCancelled() {
+        finish();
+    }
+
+    @Override
+    public void onAuthenticationSuccessful() {
+    }
+
+    @Override
+    public void onAuthenticationHelp(int helpCode, CharSequence helpString) {
+    }
+
+    @Override
+    public void onAuthenticationError(int errorCode, CharSequence errString) {
     }
 
 }

@@ -41,7 +41,7 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getActivity().getSharedPreferences(getString(R.string.sp_name), Context.MODE_PRIVATE);
         getActivity().setTitle(getString(R.string.title_history));
 
         View root = inflater.inflate(R.layout.fragment_history, container, false);
@@ -50,10 +50,10 @@ public class HistoryFragment extends Fragment {
         switchCurrentModule = root.findViewById(R.id.switchHistoryCurrentModule);
         listView = root.findViewById(R.id.listViewHistory);
 
-        boolean currentModule = sharedPref.getBoolean(getString(R.string.sp_history_current_module), false);
-        refreshListView(currentModule);
+        boolean onlyCurrentModule = sharedPref.getBoolean(getString(R.string.sp_history_current_module), false);
+        refreshListView(onlyCurrentModule);
 
-        switchCurrentModule.setChecked(currentModule);
+        switchCurrentModule.setChecked(onlyCurrentModule);
         switchCurrentModule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

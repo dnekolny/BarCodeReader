@@ -131,7 +131,7 @@ public class DataAccess {
                 return m;
             }
         }
-        return null;
+        return modules.get(0);
     }
 
     ///Save or Update module
