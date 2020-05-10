@@ -1,6 +1,7 @@
 package com.example.barcodereader.model;
 
 import android.content.Context;
+import android.graphics.Color;
 
 import com.example.barcodereader.helpers.DataHelper;
 import com.example.barcodereader.helpers.DataAccess;
@@ -52,7 +53,7 @@ public class Module implements Serializable {
                 DataHelper.getRandomLong(),
                 "Other",
                 665,
-                0xFFFFFFFF,
+                Color.YELLOW,
                 false
         ));
         return modules;

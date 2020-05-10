@@ -45,4 +45,31 @@
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_bottom_sheet</item>
     </style>
+
+
+    <!--LIGHT-->
+    <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorLPrimary</item>
+        <item name="colorPrimaryDark">@color/colorLPrimaryDark</item>
+        <item name="colorAccent">@color/colorLAccent</item>
+        <item name="android:textColorPrimary">@color/colorLText</item>
+        <item name="android:windowBackground">@color/colorLBackground</item>
+
+        <item name="icdStyle">@style/CustomLIconDialogStyle</item>
+    </style>
+
+    <!-- Your custom dialog style, don't forget to specify the parent style! -->
+    <style name="CustomLIconDialogStyle" parent="IcdStyle">
+        <item name="icdIconSize">50dp</item>
+        <item name="icdIconColor">@color/colorText</item>
+        <item name="icdListHeaderStyle">@style/CustomHeaderStyle</item>
+        <item name="icdDialogButtonStyle">@style/CustomLDialogButtonStyle</item>
+    </style>
+
+    <!-- Custom style for the list headers, again don't forget the parent! -->
+    <style name="CustomLDialogButtonStyle" parent="IcdDialogButtonStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/colorLText</item>
+    </style>
 </resources>

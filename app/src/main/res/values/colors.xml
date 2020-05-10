@@ -10,6 +10,15 @@
     <color name="colorBackground">#222222</color>
     <color name="colorBackgroundLight">#323232</color>
 
+    <!-- LIGHT -->
+    <color name="colorLPrimary">#FFFFFF</color>
+    <color name="colorLPrimaryDark">#313131</color>
+    <color name="colorLAccent">#00BBAB</color>
+    <color name="colorLText">#1A1A1A</color>
+    <color name="colorLTextLight">#3C3C3C</color>
+    <color name="colorLBackground">#eeeeee</color>
+    <color name="colorLBackgroundLight">#ffffff</color>
+
     <!-- BLUE -->
     <!--<color name="colorPrimary">#005792</color>
     <color name="colorPrimaryDark">#00204a</color>

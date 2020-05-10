@@ -14,12 +14,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.barcodereader.R;
+import com.example.barcodereader.biometric.BiometricUtils;
 import com.example.barcodereader.helpers.DataAccess;
 import com.example.barcodereader.model.CameraItem;
 import com.example.barcodereader.model.SearchSetting;
@@ -36,8 +39,9 @@ import androidx.fragment.app.Fragment;
 
 public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, SettingSearchListAdapter.SettingSearchListAdapterHandler {
 
+    private LinearLayout linearLayoutAuth;
     private Spinner spinnerCamera;
-    private Switch switchSound, switchVibration, switchChromeTabs, switchUseUrl;
+    private Switch switchSound, switchVibration, switchChromeTabs, switchUseUrl, switchFingerPrint;
     private TextView tvVersion;
     private ImageView btnAddSearchSetting;
     private ExpandableHeightListView listViewSearch;
@@ -61,13 +65,13 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
             e.printStackTrace();
         }
 
-        //TODO dark mode
-
+        linearLayoutAuth = root.findViewById(R.id.linearLayoutSettingsAuthentication);
         spinnerCamera = root.findViewById(R.id.spinnerCamera);
         switchSound = root.findViewById(R.id.switchSound);
         switchVibration = root.findViewById(R.id.switchVibration);
         switchChromeTabs = root.findViewById(R.id.switchChromeTabs);
         switchUseUrl = root.findViewById(R.id.switchUrl);
+        switchFingerPrint = root.findViewById(R.id.switchFingerPrint);
         tvVersion = root.findViewById(R.id.textViewAppVersion);
 
         listViewSearch = root.findViewById(R.id.listViewSettingSearch);
@@ -81,6 +85,14 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         switchVibration.setOnClickListener(this);
         switchChromeTabs.setOnClickListener(this);
         switchUseUrl.setOnClickListener(this);
+        switchFingerPrint.setOnClickListener(this);
+
+        if (BiometricUtils.isHardwareSupported(getContext())
+                && BiometricUtils.isFingerprintAvailable(getContext())
+                && BiometricUtils.isPermissionGranted(getContext())
+                && BiometricUtils.isSdkVersionSupported()) {
+            linearLayoutAuth.setVisibility(View.VISIBLE);
+        }
 
         loadCameras();
         refreshUi();
@@ -88,7 +100,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         return root;
     }
 
-    public void saveSetting(){
+    public void saveSetting() {
         try {
             DataAccess.saveSetting(setting, getContext());
         } catch (IOException | ClassNotFoundException e) {
@@ -96,7 +108,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         }
     }
 
-    private void refreshUi(){
+    private void refreshUi() {
         //CAMERA
         ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, cameras);
         spinnerCamera.setAdapter(adapter);
@@ -108,6 +120,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         switchVibration.setChecked(setting.isVibration());
         switchChromeTabs.setChecked(setting.isChromeTabs());
         switchUseUrl.setChecked(setting.isUseUrl());
+        switchFingerPrint.setChecked(sharedPref.getBoolean(getString(R.string.sp_fingerprint_enable), false));
 
         //LIST VIEW SEARCH
         searchListAdapter = new SettingSearchListAdapter(getContext(), setting.getSearchSettings(), this);
@@ -171,6 +184,11 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
                 setting.getSearchSettings().add(SearchSetting.getDefaultSearchSetting(false));
                 searchListAdapter = new SettingSearchListAdapter(getContext(), setting.getSearchSettings(), this);
                 listViewSearch.setAdapter(searchListAdapter);
+                break;
+            case R.id.switchFingerPrint:
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(getString(R.string.sp_fingerprint_enable), switchFingerPrint.isChecked());
+                editor.apply();
                 break;
         }
         saveSetting();

@@ -15,6 +15,7 @@ import com.example.barcodereader.biometric.BiometricCallback;
 import com.example.barcodereader.biometric.BiometricManager;
 import com.example.barcodereader.helpers.DataAccess;
 import com.example.barcodereader.model.Module;
+import com.example.barcodereader.ui.scan.ScanFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;
@@ -25,8 +26,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity implements BiometricCallback {
@@ -40,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements BiometricCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //THEME
+        //setTheme(R.style.AppThemeLight);
+
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -53,10 +60,12 @@ public class MainActivity extends AppCompatActivity implements BiometricCallback
 
         checkPermissions();
 
-        //TODO check if is enabled in setting
         boolean fingerprintEnable = sharedPref.getBoolean(getString(R.string.sp_fingerprint_enable), false);
         if (fingerprintEnable) {
             showFingerPrintDialog();
+        }
+        else {
+            setAuth(true);
         }
 
         //SET DEFAULT MODULE
@@ -98,20 +107,36 @@ public class MainActivity extends AppCompatActivity implements BiometricCallback
             permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
 
-        //FINGERPRINT PERMISSION
-        /*if (BiometricUtils.isBiometricPromptEnabled()) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_BIOMETRIC) == PackageManager.PERMISSION_DENIED) {
-                permissions.add(Manifest.permission.USE_BIOMETRIC);
-            }
-        } else {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_DENIED) {
-                permissions.add(Manifest.permission.USE_FINGERPRINT);
-            }
-        }*/
-
         if (permissions.size() > 0) {
             ActivityCompat.requestPermissions(this, permissions.toArray(new String[0]), MAIN_REQUEST_CODE);
         }
+    }
+
+    private void enableScan() {
+        setAuth(true);
+
+        try {
+            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            ScanFragment scanF = (ScanFragment) navHostFragment.getChildFragmentManager().getFragments().get(0);
+            scanF.enableScan();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void setAuth(boolean value){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(getString(R.string.sp_is_auth), value);
+        editor.apply();
+    }
+
+    @Override
+    protected void onDestroy() {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(getString(R.string.sp_is_auth), false);
+        editor.commit();
+        super.onDestroy();
     }
 
     //FINGER PRINT
@@ -137,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements BiometricCallback
 
     @Override
     public void onAuthenticationFailed() {
-        finish();
     }
 
     @Override
@@ -147,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements BiometricCallback
 
     @Override
     public void onAuthenticationSuccessful() {
+        enableScan();
     }
 
     @Override

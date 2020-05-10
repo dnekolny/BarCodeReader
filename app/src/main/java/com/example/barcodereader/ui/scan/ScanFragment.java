@@ -66,6 +66,15 @@ public class ScanFragment extends Fragment {
         return scanner;
     }
 
+    public void enableScan() {
+        scanner.setResultHandler(new ZXingResultHandler(setting, module, getContext()));
+        try {
+            scanner.startCamera(Integer.parseInt(setting.getIdCamera()));
+        } catch (NumberFormatException e) {
+            scanner.startCamera();
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.scan_menu_buttons, menu);
@@ -83,11 +92,15 @@ public class ScanFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        scanner.setResultHandler(new ZXingResultHandler(setting, module, getContext()));
-        try {
-            scanner.startCamera(Integer.parseInt(setting.getIdCamera()));
-        } catch (NumberFormatException e) {
-            scanner.startCamera();
+        boolean fingerprintEnable = sharedPref.getBoolean(getString(R.string.sp_fingerprint_enable), false);
+        if (fingerprintEnable) {
+            boolean isAuth = sharedPref.getBoolean(getString(R.string.sp_is_auth), false);
+            if(isAuth) {
+                enableScan();
+            }
+        }
+        else {
+            enableScan();
         }
     }
 
@@ -108,5 +121,4 @@ public class ScanFragment extends Fragment {
         }
         super.onDestroy();
     }
-
 }

@@ -1,7 +1,9 @@
 package com.example.barcodereader.biometric;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -48,8 +50,10 @@ public class BiometricDialogV23 extends BottomSheetDialog implements View.OnClic
         View bottomSheetView = getLayoutInflater().inflate(R.layout.view_bottom_sheet, null);
         setContentView(bottomSheetView);
 
-        View touchOutsideView = getWindow().getDecorView().findViewById(R.id.touch_outside);
-        touchOutsideView.setOnClickListener(null);
+        /*View touchOutsideView = getWindow().getDecorView().findViewById(R.id.touch_outside);
+        touchOutsideView.setOnClickListener(null);*/
+
+        setCancelable(false);
 
         btnCancel = findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(this);
@@ -92,7 +96,6 @@ public class BiometricDialogV23 extends BottomSheetDialog implements View.OnClic
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void onClick(View view) {
